@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html lang="id">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Task Manager Simple</title>
+    <style>
+      body {
+        font-family: Arial, sans-serif;
+        background: #f0f0f0;
+        padding: 20px;
+        display: flex;
+        justify-content: center;
+      }
+      .container {
+        background: white;
+        padding: 20px;
+        border-radius: 8px;
+        width: 100%;
+        max-width: 400px;
+        box-shadow: 0 0 5px rgba(0, 0, 0, 0.1);
+      }
+      h1 {
+        text-align: center;
+        margin-bottom: 20px;
+      }
+      input[type="text"] {
+        width: calc(100% - 90px);
+        padding: 10px;
+        font-size: 16px;
+        border: 1px solid #ccc;
+        border-radius: 4px;
+        box-sizing: border-box;
+      }
+      button {
+        width: 70px;
+        padding: 10px;
+        font-size: 16px;
+        margin-left: 10px;
+        border: none;
+        background-color: #3498db;
+        color: white;
+        border-radius: 4px;
+        cursor: pointer;
+      }
+      ul {
+        list-style: none;
+        padding-left: 0;
+        margin-top: 20px;
+      }
+      li {
+        padding: 10px;
+        background: #eee;
+        margin-bottom: 10px;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        border-radius: 4px;
+      }
+      .task-text {
+        flex: 1;
+        cursor: pointer;
+      }
+      .task-text.completed {
+        text-decoration: line-through;
+        color: #888;
+      }
+      .btn {
+        background: #e74c3c;
+        border: none;
+        color: white;
+        padding: 5px 10px;
+        border-radius: 4px;
+        cursor: pointer;
+      }
+      .checkmark {
+        color: green;
+        font-weight: bold;
+        font-size: 18px;
+        margin-right: 8px;
+        user-select: none;
+      }
+      .actions {
+        display: flex;
+        align-items: center;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <h1>Task Manager</h1>
+      <div>
+        <input
+          type="text"
+          id="taskInput"
+          placeholder="Tambahkan tugas baru..."
+        />
+        <button onclick="addTask()">Tambah</button>
+      </div>
+      <ul id="taskList"></ul>
+    </div>
+
+    <script>
+      const taskInput = document.getElementById("taskInput");
+      const taskList = document.getElementById("taskList");
+      let tasks = [];
+      let taskId = 1;
+
+      // Default tasks
+      const defaultTasks = [
+        { id: taskId++, text: "Belajar JavaScript", completed: false },
+        { id: taskId++, text: "Membuat website portfolio", completed: true },
+        { id: taskId++, text: "Olahraga pagi", completed: false },
+        { id: taskId++, text: "Membaca buku", completed: false },
+      ];
+      tasks = [...defaultTasks];
+      renderTasks();
+
+      function addTask() {
+        const text = taskInput.value.trim();
+        if (!text) return;
+        tasks.push({ id: taskId++, text, completed: false });
+        taskInput.value = "";
+        renderTasks();
+      }
+
+      function toggleTask(id) {
+        tasks = tasks.map((task) =>
+          task.id === id ? { ...task, completed: !task.completed } : task
+        );
+        renderTasks();
+      }
+
+      function deleteTask(id) {
+        tasks = tasks.filter((task) => task.id !== id);
+        renderTasks();
+      }
+
+      function renderTasks() {
+        taskList.innerHTML = "";
+        tasks.forEach((task) => {
+          const li = document.createElement("li");
+
+          const span = document.createElement("span");
+          span.textContent = task.text;
+          span.className = "task-text" + (task.completed ? " completed" : "");
+          span.onclick = () => toggleTask(task.id);
+
+          const actionsDiv = document.createElement("div");
+          actionsDiv.className = "actions";
+
+          if (task.completed) {
+            const checkmark = document.createElement("span");
+            checkmark.className = "checkmark";
+            checkmark.textContent = "✓";
+            actionsDiv.appendChild(checkmark);
+          }
+
+          const btn = document.createElement("button");
+          btn.textContent = "Hapus";
+          btn.className = "btn";
+          btn.onclick = () => deleteTask(task.id);
+
+          actionsDiv.appendChild(btn);
+
+          li.appendChild(span);
+          li.appendChild(actionsDiv);
+          taskList.appendChild(li);
+        });
+      }
+    </script>
+  </body>
+</html>
